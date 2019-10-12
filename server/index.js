@@ -20,6 +20,7 @@ app.use(
     noInfo: true,
     publicPath: webpackConfig.output.publicPath,
     stats: { colors: true },
+    writeToDisk: true,
   }),
 );
 

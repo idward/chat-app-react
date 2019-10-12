@@ -1,0 +1,7 @@
+.SendMessage {
+  display: flex;
+}
+
+.SendMessage input {
+  flex-grow: 1;
+}

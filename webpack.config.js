@@ -42,25 +42,51 @@ module.exports = {
         use: [
           // { loader: 'style-loader' },
           { loader: MiniCssExtractPlugin.loader },
-          {
-            loader: 'css-modules-typescript-loader',
-          },
+          // {
+          //   loader: 'css-modules-typescript-loader',
+          // },
           {
             loader: 'css-loader',
-            options: {
-              modules: {
-                localIdentName: '[name]_[local]_[hash:base64:5]',
-              },
-              importLoaders: 2,
-              sourceMap: true,
-              // minimize: true,
-            },
+            // options: {
+            //   modules: {
+            //     localIdentName: '[name]_[local]_[hash:base64:5]',
+            //   },
+            //   importLoaders: 2,
+            //   sourceMap: true,
+            //   // minimize: true,
+            // },
           },
+          // {
+          //   loader: 'postcss-loader',
+          // },
+        ],
+      },
+      {
+        test: /\.(png|jpe?g|gif|ttf|woff|woff2|eot|svg)$/i,
+        use: [
           {
-            loader: 'postcss-loader',
+            loader: 'url-loader',
+            options: {
+              limit: 100000,
+            },
           },
         ],
       },
+      {
+        test: /\.json$/,
+        use: [{ loader: 'json-loader' }],
+      },
+      // {
+      //   loader: require.resolve('file-loader'),
+      //   // Exclude `js` files to keep "css" loader working as it injects
+      //   // its runtime that would otherwise be processed through "file" loader.
+      //   // Also exclude `html` and `json` extensions so they get processed
+      //   // by webpacks internal loaders.
+      //   exclude: [/\.(js|mjs|jsx|ts|tsx)$/, /\.html$/, /\.json$/],
+      //   options: {
+      //     name: 'static/media/[name].[hash:8].[ext]',
+      //   },
+      // },
     ],
   },
   resolve: {
@@ -69,23 +95,29 @@ module.exports = {
   optimization: {
     runtimeChunk: 'single',
     splitChunks: {
-      chunks: 'all',
-      maxInitialRequests: Infinity,
-      minSize: 0,
+      // chunks: 'all',
+      // maxInitialRequests: Infinity,
+      // minSize: 0,
       cacheGroups: {
         vendor: {
           test: /[\\/]node_modules[\\/]/,
-          name(module) {
-            const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1];
-            return `npm.${packageName.replace('@', '')}`;
-          },
+          chunks: 'initial',
+          name: 'vendor',
+          enforce: true,
+          // name(module) {
+          //   const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1];
+          //   return `npm.${packageName.replace('@', '')}`;
+          // },
         },
       },
     },
   },
   plugins: [
     new CleanWebpackPlugin({
+      root: __dirname,
+      verbose: true,
       dry: false,
+      cleanAfterEveryBuildPatterns: ['dist/main.*.js', 'dist/mainfest.*.js'],
     }),
     new ForkTsCheckerWebpackPlugin({ eslint: true }),
     new MiniCssExtractPlugin({
